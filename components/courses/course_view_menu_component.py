@@ -2,7 +2,7 @@ from playwright.sync_api import Page, expect
 
 from components.base_component import BaseComponent
 from elements.button import Button
-
+import allure
 
 
 class CourseViewMenuComponent(BaseComponent):
@@ -14,6 +14,7 @@ class CourseViewMenuComponent(BaseComponent):
         self.delete_menu_button = Button(page, 'course-view-delete-menu-item', 'Delete')
 
 
+    @allure.step('Open course menu at "{index}" and click edit')
     def click_edit(self, index: int):
         self.menu_button.click(nth=index)
 
