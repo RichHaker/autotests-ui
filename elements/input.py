@@ -15,6 +15,7 @@ class Input(BaseElement):
     def fill(self, value: str, nth: int = 0, **kwargs):
         with allure.step(f'Fill {self.type_of} "{self.name}" to value "{value}"'):
             locator = self.get_locator(nth, **kwargs)
+            expect(locator).to_be_visible()  # Ждем, пока поле появится
             locator.fill(value)
 
     def check_have_value(self, value: str, nth: int = 0, **kwargs):

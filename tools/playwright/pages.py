@@ -8,7 +8,10 @@ def initialize_playwright_page(
         browser_type: Browser,
         storage_state: str | None = None
 ) -> Page:
-    browser = playwright[browser_type].launch(headless=settings.headless)
+    browser = playwright[browser_type].launch(
+        headless=settings.headless,
+        slow_mo=500
+    )
     context = browser.new_context(
         base_url=settings.get_base_url(),
         storage_state=storage_state,
