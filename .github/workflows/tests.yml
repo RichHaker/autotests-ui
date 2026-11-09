@@ -33,10 +33,17 @@ jobs:
           pip install -r requirements.txt  
           playwright install --with-deps  
 
-      # 4. Шаг для запуска тестов с использованием pytest и генерации отчётов Allure
+      # 4. Шаг для запуска тестов с использованием pytest и генерации отчётов Allure (--numprocesses 2 временно убрали с последней строчки)
       - name: Run Playwright tests with pytest and generate Allure results
         run: |
-          pytest -m regression --alluredir=allure-results --numprocesses 2 
+          pytest -m regression --alluredir=allure-results 
+
+      # 4.5 Устанавливаем Java (ОБЯЗАТЕЛЬНО для генерации Allure отчета)
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
       # 5. Шаг для получения истории отчётов Allure, если она существует
       - name: Get Allure history
