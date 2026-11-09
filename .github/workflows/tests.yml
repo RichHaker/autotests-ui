@@ -1,7 +1,5 @@
-# Имя вашего workflow, которое будет отображаться в интерфейсе GitHub Actions
 name: UI tests
 
-# Указываем, когда будет запускаться данный workflow
 on:
   push:
     branches:
@@ -37,14 +35,14 @@ jobs:
         run: |
           pytest -m regression --alluredir=allure-results
 
-      # 4.5 Устанавливаем Java
+      # 4.5 Устанавливаем Java (нужна для Allure)
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      # 5. Получаем историю
+      # 5. Скачиваем историю (если ветки gh-pages нет, шаг просто пропустится)
       - name: Get Allure history
         uses: actions/checkout@v4
         if: always()
@@ -53,13 +51,16 @@ jobs:
           ref: gh-pages
           path: gh-pages
 
-            # 6. Генерируем отчет с сохранением истории и Executors
+      # 6. Генерируем отчет с сохранением истории и Executors
       - name: Generate Allure Report
         if: always()
         run: |
           npm install -g allure-commandline --save-dev
-
-        # Создаем executor.json для ссылки на GitHub Actions
+          
+          if [ -d "gh-pages/history" ]; then
+            cp -r gh-pages/history allure-results/
+          fi
+          
           cat <<EOF > allure-results/executor.json
           {
             "name": "GitHub Actions",
@@ -71,15 +72,9 @@ jobs:
           }
           EOF
           
-          # Копируем историю, если она есть
-          if [ -d "gh-pages/history" ]; then
-            cp -r gh-pages/history allure-results/
-          fi
-          
-          # Генерируем отчет
           allure generate allure-results --clean -o allure-history
 
-      # 7. Деплоим
+      # 7. Деплоим отчет на GitHub Pages
       - name: Deploy report to Github Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v4
