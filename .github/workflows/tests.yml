@@ -45,7 +45,7 @@ jobs:
 
       - name: Generate Coverage report
         run: |
-          ui-coverage-tool save-report
+          ui-coverage-tool save-report --history-file ./coverage-history.json
           
       # Сохраняем историю обратно в кеш
       - name: Cache Coverage  history
@@ -60,7 +60,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: coverage.html
+          path: |
+            coverage.html
+            coverage-history.json
 
       - name: Upload Allure results
         uses: actions/upload-artifact@v4
